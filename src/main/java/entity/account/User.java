@@ -1,13 +1,45 @@
 package entity.account;
 
-/**
- * Created by ivankov on 13.07.2017.
- */
-public class User {
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "user")
+public class User implements Serializable {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "login")
     private String login;
+    @Column(name = "password")
     private String password;
+    @Column(name = "email")
     private String email;
+
+    public User() {}
+
+    public User(String login) {
+        this.login = login;
+    }
+
+    public User(Long id, String login) {
+        this.id = id;
+        this.login = login;
+    }
+
+    public User(Long id, String login, String password) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+    }
+
+    public User(Long id, String login, String password, String email) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+    }
 
     public Long getId() {
         return id;

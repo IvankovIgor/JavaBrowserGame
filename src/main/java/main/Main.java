@@ -1,5 +1,6 @@
 package main;
 
+import entity.resource.DatabaseSettings;
 import entity.resource.GameSettings;
 import entity.resource.ServerSettings;
 import game.mechanics.GameMechanics;
@@ -16,6 +17,8 @@ import service.account.AccountService;
 import service.account.AccountServiceImpl;
 import service.auth.AuthService;
 import service.auth.AuthServiceImpl;
+import service.database.DatabaseService;
+import service.database.DatabaseServiceMySqlImpl;
 import service.websocket.WebSocketService;
 import service.websocket.WebSocketServiceImpl;
 import servlet.*;
@@ -43,6 +46,11 @@ public class Main {
         WebSocketService webSocketService = new WebSocketServiceImpl();
         context.add(webSocketService);
         ResourceFactory.getInstance().loadAllResources("src/main/res");
+
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
+        DatabaseService databaseService = new DatabaseServiceMySqlImpl(databaseSettings);
+        context.add(databaseService);
+
         GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
         GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService, gameSettings);
 

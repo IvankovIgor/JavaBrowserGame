@@ -16,7 +16,8 @@ public class PropertiesFileParser {
             properties.load(settingsFile);
 
             object = ReflectionHelper.createInstance(properties.getProperty("class"));
-            ReflectionHelper.setFieldValue(object, "port", properties.getProperty("port"));
+            // TODO
+            ReflectionHelper.setFieldsValue(object, properties);
 
         } catch (IOException e) {
             e.printStackTrace();

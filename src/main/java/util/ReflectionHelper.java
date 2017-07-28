@@ -1,6 +1,7 @@
 package util;
 
 import java.lang.reflect.Field;
+import java.util.Properties;
 
 public class ReflectionHelper {
     public static Object createInstance(String className) {
@@ -10,6 +11,14 @@ public class ReflectionHelper {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void setFieldsValue(Object object, Properties properties) {
+        Field[] fields = object.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            setFieldValue(object, fieldName, properties.getProperty(fieldName));
+        }
     }
 
     public static void setFieldValue(Object object, String fieldName, String value) {
