@@ -1,4 +1,4 @@
-package service.database.dao;
+package service.database.hql.dao;
 
 import entity.account.User;
 import org.hibernate.Criteria;

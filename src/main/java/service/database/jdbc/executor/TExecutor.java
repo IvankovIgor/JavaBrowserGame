@@ -1,56 +1,59 @@
 package service.database.jdbc.executor;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import service.database.jdbc.handler.PreparedStatamentHandler;
+import service.database.jdbc.handler.TResultHandler;
+
+import java.lang.invoke.MethodHandles;
+import java.sql.*;
 
 public class TExecutor {
+    @SuppressWarnings("ConstantNamingConvention")
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-    private SessionFactory sessionFactory;
+    public <T> T execQuery(Connection connection, String query, TResultHandler<T> handler) throws SQLException {
+        T value = null;
 
-    public TExecutor(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    public <T, P> T execQuery(ExecQuery<T, P> exec, P parameter) {
-        T result = null;
-        Session session = null;
-
-        try {
-            session = sessionFactory.openSession();
-            result = exec.execQuery(session, parameter);
-        } catch (HibernateException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (session != null) {
-                session.close();
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet result = stmt.executeQuery(query)) {
+                value = handler.handle(result);
+            } catch (SQLException e) {
+                logger.warn("When executing query");
+                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            logger.warn("When creating statement");
+            e.printStackTrace();
         }
 
-        return result;
+        return value;
     }
 
-    public <P> void execUpdate(ExecUpdate<P> exec, P parameter) {
-        Session session = null;
-        Transaction transaction = null;
+    public int execUpdate(Connection connection, String update) {
+        int value = 0;
 
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            exec.execUpdate(session, parameter);
-        } catch (HibernateException ex) {
-            ex.printStackTrace();
-            if (transaction != null) {
-                transaction.rollback();
-            }
-        } finally {
-            if (transaction != null) {
-                transaction.commit();
-            }
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
+        try (Statement stmt = connection.createStatement()) {
+            value = stmt.executeUpdate(update);
+        } catch (SQLException e) {
+            logger.warn("When creating statement");
+            e.printStackTrace();
         }
+
+        return value;
+    }
+
+    public int execPreparedUpdate(Connection connection, String update, PreparedStatamentHandler handler) {
+        int value = 0;
+
+        try (PreparedStatement stmt = connection.prepareStatement(update)) {
+            handler.handle(stmt);
+            value = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.warn("While executing prepared update");
+        }
+
+        return value;
     }
 }

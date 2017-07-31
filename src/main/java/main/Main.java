@@ -18,7 +18,7 @@ import service.account.AccountServiceImpl;
 import service.auth.AuthService;
 import service.auth.AuthServiceImpl;
 import service.database.DatabaseService;
-import service.database.DatabaseServiceMySqlImpl;
+import service.database.jdbc.DatabaseServiceMySQLImpl;
 import service.websocket.WebSocketService;
 import service.websocket.WebSocketServiceImpl;
 import servlet.*;
@@ -48,7 +48,7 @@ public class Main {
         ResourceFactory.getInstance().loadAllResources("src/main/res");
 
         DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
-        DatabaseService databaseService = new DatabaseServiceMySqlImpl(databaseSettings);
+        DatabaseService databaseService = new DatabaseServiceMySQLImpl(databaseSettings);
         context.add(databaseService);
 
         GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
