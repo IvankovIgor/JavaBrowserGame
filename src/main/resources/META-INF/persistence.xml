@@ -1,0 +1,21 @@
+<persistence version="2.0"
+             xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="JavaBrowserGame" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <class>entity.account.User</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <!--<properties>-->
+            <!--&lt;!&ndash; The JDBC driver of your database &ndash;&gt;-->
+            <!--<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />-->
+            <!--&lt;!&ndash; The JDBC URL to the database instance &ndash;&gt;-->
+            <!--<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/first" />-->
+            <!--&lt;!&ndash; The database username &ndash;&gt;-->
+            <!--<property name="javax.persistence.jdbc.user" value="root" />-->
+            <!--&lt;!&ndash; The database password &ndash;&gt;-->
+            <!--<property name="javax.persistence.jdbc.password" value="root" />-->
+        <!--</properties>-->
+    </persistence-unit>
+</persistence>

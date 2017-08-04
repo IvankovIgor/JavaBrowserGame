@@ -17,8 +17,7 @@ import service.account.AccountService;
 import service.account.AccountServiceImpl;
 import service.auth.AuthService;
 import service.auth.AuthServiceImpl;
-import service.database.DatabaseService;
-import service.database.jdbc.DatabaseServiceMySQLImpl;
+import service.database.DAOFactory;
 import service.websocket.WebSocketService;
 import service.websocket.WebSocketServiceImpl;
 import servlet.*;
@@ -26,9 +25,6 @@ import servlet.*;
 import javax.servlet.Servlet;
 import java.lang.invoke.MethodHandles;
 
-/**
- * @author Igor Ivankov
- */
 public class Main {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
@@ -45,11 +41,11 @@ public class Main {
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
         context.add(webSocketService);
-        ResourceFactory.getInstance().loadAllResources("src/main/res");
+        ResourceFactory.getInstance().loadAllResources("src/main/resources");
 
         DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
-        DatabaseService databaseService = new DatabaseServiceMySQLImpl(databaseSettings);
-        context.add(databaseService);
+        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JDBC_MYSQL, databaseSettings);
+        context.add(daoFactory);
 
         GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
         GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService, gameSettings);

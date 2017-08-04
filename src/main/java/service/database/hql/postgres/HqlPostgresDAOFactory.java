@@ -1,4 +1,4 @@
-package service.database.hql;
+package service.database.hql.postgres;
 
 import entity.account.User;
 import entity.resource.DatabaseSettings;
@@ -6,11 +6,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import service.database.DAOFactory;
+import service.database.dao.UserDAO;
+import service.database.hql.postgres.dao.UserDAOImpl;
 
-public class DatabaseServiceMySQLImpl {
-        private SessionFactory sessionFactory;
+public class HqlPostgresDAOFactory extends DAOFactory {
+    private SessionFactory sessionFactory;
 
-    public DatabaseServiceMySQLImpl(DatabaseSettings databaseSettings) {
+    public HqlPostgresDAOFactory(DatabaseSettings databaseSettings) {
         Configuration configuration = new Configuration();
 
         configuration.addAnnotatedClass(User.class);
@@ -25,20 +28,6 @@ public class DatabaseServiceMySQLImpl {
         sessionFactory = createSessionFactory(configuration);
     }
 
-    private String configureConnectionUrl(DatabaseSettings dbSettings) {
-        return dbSettings.getType() +
-                dbSettings.getHost() +
-                ':' +
-                dbSettings.getPort() +
-                '/' +
-                dbSettings.getSchema() +
-                "?user=" +
-                dbSettings.getUser() +
-                "&password=" +
-                dbSettings.getPassword() +
-                "&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    }
-
     private static SessionFactory createSessionFactory(Configuration configuration) {
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
 
@@ -46,5 +35,10 @@ public class DatabaseServiceMySQLImpl {
         ServiceRegistry serviceRegistry = builder.build();
 
         return configuration.buildSessionFactory(serviceRegistry);
+    }
+
+    @Override
+    public UserDAO getUserDAO() {
+        return new UserDAOImpl(sessionFactory);
     }
 }

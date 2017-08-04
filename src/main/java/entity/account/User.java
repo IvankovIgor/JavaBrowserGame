@@ -6,32 +6,24 @@ import java.io.Serializable;
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
+    @SuppressWarnings("InstanceVariableNamingConvention")
     @Id
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "login")
+    @Column(name = "login", unique = true)
     private String login;
     @Column(name = "password")
     private String password;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     public User() {}
 
-    public User(String login) {
-        this.login = login;
-    }
-
-    public User(Long id, String login) {
-        this.id = id;
-        this.login = login;
-    }
-
-    public User(Long id, String login, String password) {
-        this.id = id;
+    public User(String login, String password, String email) {
         this.login = login;
         this.password = password;
+        this.email = email;
     }
 
     public User(Long id, String login, String password, String email) {

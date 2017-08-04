@@ -1,6 +1,7 @@
 package main;
 
 import entity.resource.Resource;
+import org.jetbrains.annotations.Nullable;
 import util.properties.PropertiesFileParser;
 import util.sax.SaxXmlReader;
 import util.vfs.Vfs;
@@ -31,7 +32,7 @@ public class ResourceFactory {
         }
     }
 
-    private Resource loadResource(String resourcePath) {
+    public @Nullable Resource loadResource(String resourcePath) {
         if (isValidPath(resourcePath) && !resources.containsKey(resourcePath)) {
             Resource resource;
             String fileExtension = getFileExtension(resourcePath);
