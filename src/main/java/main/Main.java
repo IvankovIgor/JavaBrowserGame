@@ -45,13 +45,13 @@ public class Main {
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
         context.add(webSocketService);
-        ResourceFactory.getInstance().loadAllResources("src/main/res");
+        ResourceSingleton.getInstance().loadAllResources("src/main/res");
 
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource("DatabaseSettings");
         DatabaseService databaseService = new DatabaseServiceMySqlImpl(databaseSettings);
         context.add(databaseService);
 
-        GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
+        GameSettings gameSettings = (GameSettings) ResourceSingleton.getInstance().getResource("GameSettings");
         GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService, gameSettings);
 
         AccountService accountService = new AccountServiceImpl();
@@ -85,7 +85,7 @@ public class Main {
         handlerList.setHandlers(new Handler[]{resourceHandler, servletContextHandler});
 
 
-        ServerSettings serverSettings = (ServerSettings) ResourceFactory.getInstance().getResource("ServerSettings");
+        ServerSettings serverSettings = (ServerSettings) ResourceSingleton.getInstance().getResource("ServerSettings");
         int port = serverSettings.getPort();
 //        int port = args.length == 1 ? Integer.valueOf(args[0]) : DEFAULT_PORT;
         Server server = new Server(port);

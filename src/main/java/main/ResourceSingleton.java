@@ -10,15 +10,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ResourceFactory {
-    private static ResourceFactory resourceFactory;
+public final class ResourceSingleton {
+    private static ResourceSingleton resourceSingleton;
     Map<String, Resource> resources = new HashMap<>();
 
-    public static ResourceFactory getInstance() {
-        if (resourceFactory == null) {
-            resourceFactory = new ResourceFactory();
+    private ResourceSingleton() {}
+
+    public static synchronized ResourceSingleton getInstance() {
+        if (resourceSingleton == null) {
+            resourceSingleton = new ResourceSingleton();
         }
-        return resourceFactory;
+        return resourceSingleton;
     }
 
     public void loadAllResources(String resourceDirectory) {
