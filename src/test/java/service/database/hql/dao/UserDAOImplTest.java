@@ -1,4 +1,4 @@
-package service.database.hql.mysql.dao;
+package service.database.hql.dao;
 
 import entity.account.User;
 import entity.resource.DatabaseSettings;
@@ -15,9 +15,10 @@ public class UserDAOImplTest {
 
     @Before
     public void setUp() {
-        ResourceFactory.getInstance().loadAllResources("src/main/resources");
+        ResourceFactory.getInstance().loadResource("src/main/resources/postgres.properties");
+//        ResourceFactory.getInstance().loadResource("src/main/resources/mysql.properties");
         DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
-        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.HQL_MYSQL, databaseSettings);
+        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.HQL_POSTGRES, databaseSettings);
         assert daoFactory != null;
         userDAO = daoFactory.getUserDAO();
     }
@@ -32,6 +33,7 @@ public class UserDAOImplTest {
         assertEquals(expected.getPassword(), actual.getPassword());
         assertEquals(expected.getEmail(), actual.getEmail());
     }
+
     @Test
     public void get() {
         User expected = new User("asdf", "qqqq", "tttt");

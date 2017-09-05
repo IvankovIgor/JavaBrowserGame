@@ -28,7 +28,7 @@ public class JdbcMySqlDAOFactory extends DAOFactory {
             e.printStackTrace();
             logger.warn("While registring JDBC driver");
         }
-        connectionUrl = configureConnectionUrl(databaseSettings);
+        connectionUrl = databaseSettings.getUrl();
     }
 
     public static Connection createConnection() throws SQLException {

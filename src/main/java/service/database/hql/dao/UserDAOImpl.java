@@ -1,4 +1,4 @@
-package service.database.hql.mysql.dao;
+package service.database.hql.dao;
 
 import entity.account.User;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +37,7 @@ public class UserDAOImpl implements UserDAO {
         return value;
     }
 
+
     @Override
     public @Nullable User get(long id) {
         logger.debug("Getting by id");
@@ -68,41 +69,4 @@ public class UserDAOImpl implements UserDAO {
 
         return value;
     }
-    //    public User read(long id) {
-//        return (User) session.get(User.class, id);
-//    }
-//
-//    public User readByName(String name) {
-//        Criteria criteria = session.createCriteria(User.class);
-//
-//        return (User) criteria.add(Restrictions.eq("login", name)).uniqueResult();
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public List<User> readAll() {
-//        Criteria criteria = session.createCriteria(User.class);
-//
-//        return (List<User>) criteria.list();
-//    }
-//
-//    public void update(User dataSet) {
-//        session.update(dataSet);
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public List<User> readLimitOrder(int limit) {
-//        Query query = session.createSQLQuery(
-//                "CALL proc(:var)")
-//                .addEntity(User.class)
-//                .setParameter("var", limit);
-//
-//        return (List<User>) query.list();
-//    }
-//
-//    public long readCountAll() {
-//        Criteria criteria = session.createCriteria(User.class);
-//        criteria.setProjection(Projections.rowCount());
-//
-//        return (long) criteria.list().get(0);
-//    }
 }

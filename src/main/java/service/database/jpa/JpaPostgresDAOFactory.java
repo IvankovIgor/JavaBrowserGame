@@ -13,13 +13,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.lang.invoke.MethodHandles;
 
-public class JpaMySqlDAOFactory extends DAOFactory {
+public class JpaPostgresDAOFactory extends DAOFactory {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
     private static EntityManagerFactory entityManagerFactory;
 
-    public JpaMySqlDAOFactory(DatabaseSettings dbSettings) {
+    public JpaPostgresDAOFactory(DatabaseSettings dbSettings) {
         Configuration configuration = new Configuration();
         configuration.setProperty("javax.persistence.jdbc.driver", dbSettings.getDriver());
         configuration.setProperty("javax.persistence.jdbc.url", dbSettings.getUrl());

@@ -3,8 +3,7 @@ package service.database;
 import entity.resource.DatabaseSettings;
 import org.jetbrains.annotations.Nullable;
 import service.database.dao.UserDAO;
-import service.database.hql.mysql.HqlMySqlDAOFactory;
-import service.database.hql.postgres.HqlPostgresDAOFactory;
+import service.database.hql.HqlDAOFactory;
 import service.database.jdbc.mysql.JdbcMySqlDAOFactory;
 import service.database.jpa.JpaMySqlDAOFactory;
 
@@ -24,9 +23,9 @@ public abstract class DAOFactory {
             case JDBC_POSTGRES:
                 return null;
             case HQL_MYSQL:
-                return new HqlMySqlDAOFactory(dbSettings);
+                return new HqlDAOFactory(dbSettings);
             case HQL_POSTGRES:
-                return new HqlPostgresDAOFactory(dbSettings);
+                return new HqlDAOFactory(dbSettings);
             case JPA_MYSQL:
                 return new JpaMySqlDAOFactory(dbSettings);
             default:
@@ -34,17 +33,17 @@ public abstract class DAOFactory {
         }
     }
 
-    protected String configureConnectionUrl(DatabaseSettings dbSettings) {
-        return dbSettings.getType() +
-                dbSettings.getHost() +
-                ':' +
-                dbSettings.getPort() +
-                '/' +
-                dbSettings.getSchema() +
-                "?user=" +
-                dbSettings.getUser() +
-                "&password=" +
-                dbSettings.getPassword() +
-                "&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    }
+//    protected String configureConnectionUrl(DatabaseSettings dbSettings) {
+//        return dbSettings.getType() +
+//                dbSettings.getHost() +
+//                ':' +
+//                dbSettings.getPort() +
+//                '/' +
+//                dbSettings.getSchema() +
+//                "?user=" +
+//                dbSettings.getUser() +
+//                "&password=" +
+//                dbSettings.getPassword() +
+//                "&useLegacyDatetimeCode=false&serverTimezone=UTC";
+//    }
 }

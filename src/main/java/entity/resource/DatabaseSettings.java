@@ -3,6 +3,7 @@ package entity.resource;
 public class DatabaseSettings implements Resource {
     private String dialect;
     private String driver;
+    private String url;
     private String type;
     private String host;
     private int port;
@@ -11,7 +12,6 @@ public class DatabaseSettings implements Resource {
     private String password;
     private String showSql;
     private String mode;
-//    private String connectionUrl;
 
     public String getDialect() {
         return dialect;
@@ -19,6 +19,10 @@ public class DatabaseSettings implements Resource {
 
     public String getDriver() {
         return driver;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public String getType() {
