@@ -25,6 +25,7 @@ public class JpaMySqlDAOFactory extends DAOFactory {
         configuration.setProperty("javax.persistence.jdbc.url", dbSettings.getUrl());
         configuration.setProperty("javax.persistence.jdbc.user", dbSettings.getUser());
         configuration.setProperty("javax.persistence.jdbc.password", dbSettings.getPassword());
+        configuration.setProperty("hibernate.default_schema", dbSettings.getSchema());
 
         entityManagerFactory = Persistence.createEntityManagerFactory("JavaBrowserGame", configuration.getProperties());
         EntityManager entityManager = entityManagerFactory.createEntityManager();

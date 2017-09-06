@@ -10,9 +10,8 @@ import service.database.jpa.JpaMySqlDAOFactory;
 public abstract class DAOFactory {
     public static final int JDBC_MYSQL = 1;
     public static final int JDBC_POSTGRES = 2;
-    public static final int HQL_MYSQL = 3;
-    public static final int HQL_POSTGRES = 4;
-    public static final int JPA_MYSQL = 5;
+    public static final int HQL = 3;
+    public static final int JPA = 4;
 
     public abstract UserDAO getUserDAO();
 
@@ -22,11 +21,9 @@ public abstract class DAOFactory {
                 return new JdbcMySqlDAOFactory(dbSettings);
             case JDBC_POSTGRES:
                 return null;
-            case HQL_MYSQL:
+            case HQL:
                 return new HqlDAOFactory(dbSettings);
-            case HQL_POSTGRES:
-                return new HqlDAOFactory(dbSettings);
-            case JPA_MYSQL:
+            case JPA:
                 return new JpaMySqlDAOFactory(dbSettings);
             default:
                 return null;

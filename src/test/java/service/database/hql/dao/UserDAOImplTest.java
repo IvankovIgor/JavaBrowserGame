@@ -18,7 +18,7 @@ public class UserDAOImplTest {
         ResourceFactory.getInstance().loadResource("src/main/resources/postgres.properties");
 //        ResourceFactory.getInstance().loadResource("src/main/resources/mysql.properties");
         DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
-        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.HQL_POSTGRES, databaseSettings);
+        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.HQL, databaseSettings);
         assert daoFactory != null;
         userDAO = daoFactory.getUserDAO();
     }

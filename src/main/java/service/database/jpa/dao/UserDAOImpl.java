@@ -3,6 +3,7 @@ package service.database.jpa.dao;
 import entity.account.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import service.database.dao.UserDAO;
 
 import javax.persistence.EntityManager;
@@ -10,8 +11,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
@@ -24,9 +28,21 @@ public class UserDAOImpl implements UserDAO {
         this.entityManagerFactory = entityManagerFactory;
     }
 
+    @Transactional
     @Override
     public int save(User user) {
-        return 0;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.persist(user);
+            entityManager.flush();
+            entityManager.getTransaction().commit();
+        } catch (HibernateException e) {
+            return 0;
+        }
+
+        return 1;
     }
 
     @Override
@@ -35,16 +51,16 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User getByLogin(String name) {
+    public User getByLogin(String login) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<User> cq = criteriaBuilder.createQuery(User.class);
-        Root<User> s = cq.from(User.class);
-//        List<Predicate> predicates = new ArrayList<>();
-//        predicates.add(criteriaBuilder.equal(, name));
+        Root<User> userRoot = cq.from(User.class);
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.equal(userRoot.get("login"), login));
+        cq.where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         TypedQuery<User> q = entityManager.createQuery(cq);
-        List<User> users = q.getResultList();
-        return users.get(0);
+        return q.getSingleResult();
     }
 }
