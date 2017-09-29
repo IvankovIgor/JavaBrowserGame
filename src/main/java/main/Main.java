@@ -5,6 +5,7 @@ import entity.resource.GameSettings;
 import entity.resource.ServerSettings;
 import game.mechanics.GameMechanics;
 import game.mechanics.GameMechanicsImpl;
+import messagesystem.MessageSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -42,6 +43,12 @@ public class Main {
         // TODO
         // use context in constructors
         Context context = new Context();
+
+        MessageSystem messageSystem = new MessageSystem();
+        final Thread accountServiceThread = new Thread(new AccountServiceImpl(messageSystem));
+        accountServiceThread.setDaemon(true);
+        accountServiceThread.setName("AccountService");
+        accountServiceThread.start();
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
         context.add(webSocketService);
