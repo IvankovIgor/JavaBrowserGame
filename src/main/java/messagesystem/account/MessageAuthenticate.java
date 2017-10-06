@@ -1,6 +1,7 @@
 package messagesystem.account;
 
 import entity.account.AccountStatus;
+import messagesystem.Abonent;
 import messagesystem.Address;
 import messagesystem.Message;
 import messagesystem.frontend.MessageIsAuthenticated;
@@ -24,6 +25,7 @@ public class MessageAuthenticate extends MessageToAccountService {
     void exec(AccountService accountService) {
         Set<AccountStatus> result = accountService.signIn(name, password);
         Message back = new MessageIsAuthenticated(getTo(), getFrom(), sessionId, result);
-        accountService.getMessageSystem().sendMessage(back);
+        Abonent abonent = (Abonent) accountService;
+        abonent.getMessageSystem().sendMessage(back);
     }
 }

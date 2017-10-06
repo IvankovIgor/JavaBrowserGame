@@ -1,6 +1,19 @@
 package messagesystem;
 
-public interface Abonent {
-    Address getAddress();
-    MessageSystem getMessageSystem();
+public abstract class Abonent {
+    private MessageSystem messageSystem;
+    private Address address;
+
+    protected Abonent(MessageSystem messageSystem) {
+        this.messageSystem = messageSystem;
+        this.address = new Address();
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public MessageSystem getMessageSystem() {
+        return messageSystem;
+    }
 }

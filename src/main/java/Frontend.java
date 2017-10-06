@@ -1,4 +1,2 @@
-import messagesystem.Abonent;
-
-public interface Frontend extends Abonent {
+public interface Frontend {
 }

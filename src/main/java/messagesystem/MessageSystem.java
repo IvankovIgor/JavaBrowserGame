@@ -7,8 +7,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MessageSystem {
     private final Map<Address, ConcurrentLinkedQueue<Message>> messages = new HashMap<>();
+    private final AddressService addressService = new AddressService();
 
-    public void addAbonent(Abonent abonent) {
+    public AddressService getAddressService() {
+        return addressService;
+    }
+
+    public void addService(Abonent abonent) {
         messages.put(abonent.getAddress(), new ConcurrentLinkedQueue<>());
     }
 

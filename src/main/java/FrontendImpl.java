@@ -1,18 +1,17 @@
-import messagesystem.Address;
+import messagesystem.Abonent;
 import messagesystem.MessageSystem;
 
-public class FrontendImpl implements Frontend, Runnable {
-    private MessageSystem messageSystem;
-    private Address address = new Address();
+public class FrontendImpl extends Abonent implements Frontend, Runnable {
+//    private MessageSystem messageSystem;
 
     public FrontendImpl(MessageSystem messageSystem) {
-        this.messageSystem = messageSystem;
+        super(messageSystem);
     }
 
     @Override
     public void run() {
         while (true) {
-            messageSystem.execForAbonent(this);
+            getMessageSystem().execForAbonent(this);
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -21,13 +20,13 @@ public class FrontendImpl implements Frontend, Runnable {
         }
     }
 
-    @Override
-    public MessageSystem getMessageSystem() {
-        return messageSystem;
-    }
-
-    @Override
-    public Address getAddress() {
-        return address;
-    }
+//    @Override
+//    public MessageSystem getMessageSystem() {
+//        return messageSystem;
+//    }
+//
+//    @Override
+//    public Address getAddress() {
+//        return address;
+//    }
 }

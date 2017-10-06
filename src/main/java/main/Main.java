@@ -44,24 +44,31 @@ public class Main {
         // use context in constructors
         Context context = new Context();
 
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
+        DatabaseService databaseService = new DatabaseServiceMySqlImpl(databaseSettings);
+        context.add(databaseService);
+
+        // MESSAGE SYSTEM ----------------------
         MessageSystem messageSystem = new MessageSystem();
-        final Thread accountServiceThread = new Thread(new AccountServiceImpl(messageSystem));
+        final Thread accountServiceThread = new Thread(new AccountServiceImpl(messageSystem, databaseService));
         accountServiceThread.setDaemon(true);
-        accountServiceThread.setName("AccountService");
+        accountServiceThread.setName("AccountService1");
         accountServiceThread.start();
+        final Thread accountServiceThread2 = new Thread(new AccountServiceImpl(messageSystem, databaseService));
+        accountServiceThread2.setDaemon(true);
+        accountServiceThread2.setName("AccountService2");
+        accountServiceThread2.start();
+        final Thread
+        // ENDS MESSAGE -----------------
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
         context.add(webSocketService);
         ResourceFactory.getInstance().loadAllResources("src/main/res");
 
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
-        DatabaseService databaseService = new DatabaseServiceMySqlImpl(databaseSettings);
-        context.add(databaseService);
-
         GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
-        GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService, gameSettings);
+        GameMechanics gameMechanics = new GameMechanicsImpl(messageSystem, webSocketService, gameSettings);
 
-        AccountService accountService = new AccountServiceImpl();
+        AccountService accountService = new AccountServiceImpl(messageSystem, databaseService);
         context.add(accountService);
 
         AuthService authService = new AuthServiceImpl();

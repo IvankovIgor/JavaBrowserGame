@@ -2,25 +2,28 @@ package service.account;
 
 import entity.account.AccountStatus;
 import entity.account.User;
+import messagesystem.Abonent;
 import messagesystem.Address;
+import messagesystem.Message;
 import messagesystem.MessageSystem;
+import messagesystem.account.MessageAuthenticate;
 import util.Validator;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by ivankov on 13.07.2017.
  */
-public class AccountServiceImpl implements AccountService, Runnable {
-    private static Map<String, User> userMap = new HashMap<>();
-    private final MessageSystem messageSystem;
-    private final Address address = new Address();
+public class AccountServiceImpl extends Abonent implements AccountService, Runnable {
+//    private static Map<String, User> userMap = new HashMap<>();
+//    private final MessageSystem messageSystem;
+//    private final Address address = new Address();
 
     public AccountServiceImpl(MessageSystem messageSystem) {
-        this.messageSystem = messageSystem;
+        super(messageSystem);
+        messageSystem.addService(this);
+        messageSystem.getAddressService().addAccountService(this);
     }
 
     @Override
@@ -44,7 +47,8 @@ public class AccountServiceImpl implements AccountService, Runnable {
         newUser.setLogin(login);
         newUser.setPassword(password);
         newUser.setEmail(email);
-        userMap.put(login, newUser);
+
+//        getMessageSystem().sendMessage();
     }
 
     @Override
@@ -57,13 +61,17 @@ public class AccountServiceImpl implements AccountService, Runnable {
         if (!accountStatuses.isEmpty())
             return accountStatuses;
 
+        Address from = this.getAddress();
+        Address to = getMessageSystem().getAddressService().getDatabaseService().g
+        Message msg = new MessageAuthenticate(this.getAddress(), ((Abonent)databaseService).getAddress(), login, password, "");
+        getMessageSystem().sendMessage(msg);
         return accountStatuses;
     }
 
     @Override
     public void run() {
         while (true) {
-            messageSystem.execForAbonent(this);
+            getMessageSystem().execForAbonent(this);
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
@@ -72,17 +80,17 @@ public class AccountServiceImpl implements AccountService, Runnable {
         }
     }
 
-    public static Map<String, User> getUserMap() {
-        return userMap;
-    }
+//    public static Map<String, User> getUserMap() {
+//        return userMap;
+//    }
 
-    @Override
-    public MessageSystem getMessageSystem() {
-        return messageSystem;
-    }
-
-    @Override
-    public Address getAddress() {
-        return address;
-    }
+//    @Override
+//    public MessageSystem getMessageSystem() {
+//        return messageSystem;
+//    }
+//
+//    @Override
+//    public Address getAddress() {
+//        return address;
+//    }
 }
