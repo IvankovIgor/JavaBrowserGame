@@ -62,7 +62,7 @@ public class AccountServiceImpl extends Abonent implements AccountService, Runna
             return accountStatuses;
 
         Address from = this.getAddress();
-        Address to = getMessageSystem().getAddressService().getDatabaseService().g
+        Address to = getMessageSystem().getAddressService().getDatabaseService().getAddress();
         Message msg = new MessageAuthenticate(this.getAddress(), ((Abonent)databaseService).getAddress(), login, password, "");
         getMessageSystem().sendMessage(msg);
         return accountStatuses;

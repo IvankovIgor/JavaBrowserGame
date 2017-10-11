@@ -50,16 +50,16 @@ public class Main {
 
         // MESSAGE SYSTEM ----------------------
         MessageSystem messageSystem = new MessageSystem();
-        final Thread accountServiceThread = new Thread(new AccountServiceImpl(messageSystem, databaseService));
+        final Thread accountServiceThread = new Thread(new AccountServiceImpl(messageSystem));
         accountServiceThread.setDaemon(true);
         accountServiceThread.setName("AccountService1");
         accountServiceThread.start();
-        final Thread accountServiceThread2 = new Thread(new AccountServiceImpl(messageSystem, databaseService));
+        final Thread accountServiceThread2 = new Thread(new AccountServiceImpl(messageSystem));
         accountServiceThread2.setDaemon(true);
         accountServiceThread2.setName("AccountService2");
         accountServiceThread2.start();
-        final Thread
-        // ENDS MESSAGE -----------------
+//        final Thread databaseServiceThread = new Thread()
+        // ENDS MESSAGE SYSTEM -----------------
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
         context.add(webSocketService);
@@ -68,7 +68,7 @@ public class Main {
         GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
         GameMechanics gameMechanics = new GameMechanicsImpl(messageSystem, webSocketService, gameSettings);
 
-        AccountService accountService = new AccountServiceImpl(messageSystem, databaseService);
+        AccountService accountService = new AccountServiceImpl(messageSystem);
         context.add(accountService);
 
         AuthService authService = new AuthServiceImpl();
