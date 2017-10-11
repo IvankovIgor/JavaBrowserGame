@@ -42,9 +42,9 @@ public class Main {
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
         context.add(webSocketService);
-        ResourceFactory.getInstance().loadAllResources("src/main/resources");
+        ResourceSingleton.getInstance().loadAllResources("src/main/resources");
 
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource("DatabaseSettings");
         DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JDBC_MYSQL, databaseSettings);
         context.add(daoFactory);
 
@@ -61,11 +61,7 @@ public class Main {
 //        final Thread databaseServiceThread = new Thread()
         // ENDS MESSAGE SYSTEM -----------------
 
-        WebSocketService webSocketService = new WebSocketServiceImpl();
-        context.add(webSocketService);
-        ResourceFactory.getInstance().loadAllResources("src/main/res");
-
-        GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
+        GameSettings gameSettings = (GameSettings) ResourceSingleton.getInstance().getResource("GameSettings");
         GameMechanics gameMechanics = new GameMechanicsImpl(messageSystem, webSocketService, gameSettings);
 
         AccountService accountService = new AccountServiceImpl(messageSystem);
@@ -99,7 +95,7 @@ public class Main {
         handlerList.setHandlers(new Handler[]{resourceHandler, servletContextHandler});
 
 
-        ServerSettings serverSettings = (ServerSettings) ResourceFactory.getInstance().getResource("ServerSettings");
+        ServerSettings serverSettings = (ServerSettings) ResourceSingleton.getInstance().getResource("ServerSettings");
         int port = serverSettings.getPort();
 //        int port = args.length == 1 ? Integer.valueOf(args[0]) : DEFAULT_PORT;
         Server server = new Server(port);
