@@ -3,6 +3,8 @@ package game.mechanics;
 import entity.game.GameSession;
 import entity.game.Player;
 import entity.resource.GameSettings;
+import messagesystem.Abonent;
+import messagesystem.MessageSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.websocket.WebSocketService;
@@ -14,7 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class GameMechanicsImpl implements GameMechanics {
+public class GameMechanicsImpl extends Abonent implements GameMechanics {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -27,7 +29,8 @@ public class GameMechanicsImpl implements GameMechanics {
     private Set<GameSession> allSessions = new HashSet<>();
     private String waiter;
 
-    public GameMechanicsImpl(WebSocketService webSocketService, GameSettings gameSettings) {
+    public GameMechanicsImpl(MessageSystem messageSystem, WebSocketService webSocketService, GameSettings gameSettings) {
+        super(messageSystem);
         this.webSocketService = webSocketService;
         this.gameSettings = gameSettings;
     }

@@ -5,6 +5,7 @@ import entity.resource.GameSettings;
 import entity.resource.ServerSettings;
 import game.mechanics.GameMechanics;
 import game.mechanics.GameMechanicsImpl;
+import messagesystem.MessageSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -47,10 +48,27 @@ public class Main {
         DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JDBC_MYSQL, databaseSettings);
         context.add(daoFactory);
 
-        GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
-        GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService, gameSettings);
+        // MESSAGE SYSTEM ----------------------
+        MessageSystem messageSystem = new MessageSystem();
+        final Thread accountServiceThread = new Thread(new AccountServiceImpl(messageSystem));
+        accountServiceThread.setDaemon(true);
+        accountServiceThread.setName("AccountService1");
+        accountServiceThread.start();
+        final Thread accountServiceThread2 = new Thread(new AccountServiceImpl(messageSystem));
+        accountServiceThread2.setDaemon(true);
+        accountServiceThread2.setName("AccountService2");
+        accountServiceThread2.start();
+//        final Thread databaseServiceThread = new Thread()
+        // ENDS MESSAGE SYSTEM -----------------
 
-        AccountService accountService = new AccountServiceImpl();
+        WebSocketService webSocketService = new WebSocketServiceImpl();
+        context.add(webSocketService);
+        ResourceFactory.getInstance().loadAllResources("src/main/res");
+
+        GameSettings gameSettings = (GameSettings) ResourceFactory.getInstance().getResource("GameSettings");
+        GameMechanics gameMechanics = new GameMechanicsImpl(messageSystem, webSocketService, gameSettings);
+
+        AccountService accountService = new AccountServiceImpl(messageSystem);
         context.add(accountService);
 
         AuthService authService = new AuthServiceImpl();
