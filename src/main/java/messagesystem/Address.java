@@ -2,6 +2,7 @@ package messagesystem;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Deprecated
 public class Address {
     private static AtomicInteger abonentIdCreator = new AtomicInteger();
     private final int abonentId;

@@ -1,3 +1,5 @@
+package service.frontend;
+
 import messagesystem.Abonent;
 import messagesystem.MessageSystem;
 
@@ -6,6 +8,8 @@ public class FrontendImpl extends Abonent implements Frontend, Runnable {
 
     public FrontendImpl(MessageSystem messageSystem) {
         super(messageSystem);
+        messageSystem.addService(this);
+        messageSystem.getAddressService().addFrontendService(this);
     }
 
     @Override
@@ -19,14 +23,4 @@ public class FrontendImpl extends Abonent implements Frontend, Runnable {
             }
         }
     }
-
-//    @Override
-//    public MessageSystem getMessageSystem() {
-//        return messageSystem;
-//    }
-//
-//    @Override
-//    public Address getAddress() {
-//        return address;
-//    }
 }

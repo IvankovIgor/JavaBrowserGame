@@ -1,5 +1,6 @@
 package messagesystem;
 
+@Deprecated
 public abstract class Message {
     private final Address from;
     private final Address to;

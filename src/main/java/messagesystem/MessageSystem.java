@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
+@Deprecated
 public class MessageSystem {
     private final Map<Address, ConcurrentLinkedQueue<Message>> messages = new HashMap<>();
     private final AddressService addressService = new AddressService();
@@ -29,6 +29,4 @@ public class MessageSystem {
             message.exec(abonent);
         }
     }
-
-
 }

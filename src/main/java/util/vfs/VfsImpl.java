@@ -7,21 +7,22 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class VfsImpl implements Vfs {
-    private String dirName;
+    private String directory;
 
-    public VfsImpl(String dirName) {
-        this.dirName = dirName;
+    public VfsImpl(String directory) {
+        this.directory = directory;
     }
 
-    public Iterator<String> getIterator(String directory) {
+    @Override
+    public Iterator<String> getIterator() {
         return new FileIterator(directory);
     }
 
-    private class FileIterator implements Iterator<String> {
+    private static final class FileIterator implements Iterator<String> {
         private Queue<File> files = new LinkedList<>();
 
-        public FileIterator(String directory) {
-            Collections.addAll(files, (new File(directory)).listFiles());
+        private FileIterator(String directory) {
+            Collections.addAll(files, (new File(directory)).listFiles((dir, name) -> name.toLowerCase().endsWith(".properties")));
         }
 
         @Override

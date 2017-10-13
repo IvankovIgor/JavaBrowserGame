@@ -1,7 +1,6 @@
 package util;
 
 import entity.account.AccountStatus;
-import service.account.AccountServiceImpl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,10 +8,10 @@ import java.util.Set;
 /**
  * Created by ivankov on 17.07.2017.
  */
-public class Validator {
+public class AccountValidator {
     private Set<AccountStatus> accountStatuses = new HashSet<>();
 
-    public Validator(Set<AccountStatus> accountStatuses) {
+    public AccountValidator(Set<AccountStatus> accountStatuses) {
         this.accountStatuses = accountStatuses;
     }
 
@@ -43,13 +42,14 @@ public class Validator {
 
     private boolean isInvalidLogin(String login) {
         // TODO
-        return true;
+        return false;
     }
 
     private boolean isExistingLogin(String login) {
         // TODO
         // IMPL????
-        return AccountServiceImpl.getUserMap().containsKey(login);
+//        return AccountServiceImpl.getUserMap().containsKey(login);
+        return false;
     }
 
     private void validatePassword(String password) {

@@ -1,9 +1,8 @@
 package main;
 
 import entity.resource.Resource;
-import org.jetbrains.annotations.Nullable;
-import util.properties.PropertiesFileParser;
-import util.sax.SaxXmlReader;
+import util.parser.properties.PropertiesParser;
+import util.parser.xml.XmlParser;
 import util.vfs.Vfs;
 import util.vfs.VfsImpl;
 
@@ -24,9 +23,10 @@ public final class ResourceSingleton {
         return resourceSingleton;
     }
 
+    @Deprecated
     public void loadAllResources(String resourceDirectory) {
         Vfs vfs = new VfsImpl(resourceDirectory);
-        Iterator<String> iterator = vfs.getIterator(resourceDirectory);
+        Iterator<String> iterator = vfs.getIterator();
 
         while (iterator.hasNext()) {
             String resourcePath = iterator.next();
@@ -34,25 +34,27 @@ public final class ResourceSingleton {
         }
     }
 
-    public @Nullable Resource loadResource(String resourcePath) {
-        if (isValidPath(resourcePath) && !resources.containsKey(resourcePath)) {
+    public boolean loadResource(String resourcePath) {
+        if (isValidPath(resourcePath)) {
             Resource resource;
             String fileExtension = getFileExtension(resourcePath);
             switch (fileExtension) {
                 case "properties":
-                    PropertiesFileParser propertiesFileParser = new PropertiesFileParser();
-                    propertiesFileParser.parse(resourcePath);
-                    resource = (Resource) propertiesFileParser.getObject();
+                    PropertiesParser propertiesParser = new PropertiesParser();
+                    propertiesParser.parse(resourcePath);
+                    resource = (Resource) propertiesParser.getObject();
                     break;
                 case "xml":
-                    resource = (Resource) SaxXmlReader.readXML(resourcePath);
+                    resource = (Resource) XmlParser.readXML(resourcePath);
                     break;
                 default:
-                    return null;
+                    return false;
             }
-            resources.put(resource.getClass().getSimpleName(), resource);
+            resources.put(resource.getClass().getName(), resource);
+            return true;
+        } else {
+            return false;
         }
-        return resources.get(resourcePath);
     }
 
     private String getFileExtension(String path) {
@@ -63,8 +65,8 @@ public final class ResourceSingleton {
         return path.lastIndexOf('.') != -1 && path.lastIndexOf('.') != 0;
     }
 
-    public Resource getResource(String resourceName) {
-        return resources.get(resourceName);
+    public Resource getResource(Class<?> resourceClass) {
+        return resources.get(resourceClass.getName());
     }
 
 }

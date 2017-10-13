@@ -1,7 +1,7 @@
 package service.database.jpa;
 
 import entity.resource.DatabaseSettings;
-import main.ResourceFactory;
+import main.ResourceSingleton;
 import org.junit.Before;
 import org.junit.Test;
 import service.database.DAOFactory;
@@ -10,8 +10,8 @@ public class JpaMySqlDAOFactoryTest {
 
     @Before
     public void setUp() {
-        ResourceFactory.getInstance().loadResource("src/main/resources/mysql.properties");
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().loadResource("DatabaseSettings");
+        ResourceSingleton.getInstance().loadResource("src/main/resources/mysql.properties");
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(DatabaseSettings.class);
         DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JPA, databaseSettings);
     }
 

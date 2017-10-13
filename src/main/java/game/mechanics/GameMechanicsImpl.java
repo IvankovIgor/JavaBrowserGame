@@ -3,8 +3,7 @@ package game.mechanics;
 import entity.game.GameSession;
 import entity.game.Player;
 import entity.resource.GameSettings;
-import messagesystem.Abonent;
-import messagesystem.MessageSystem;
+import main.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.websocket.WebSocketService;
@@ -16,12 +15,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class GameMechanicsImpl extends Abonent implements GameMechanics {
+public class GameMechanicsImpl implements GameMechanics {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-    private static final int STEP_TIME = 100;
-    private static final int GAME_TIME = 15 * 1000;
+    private static final int STEP_TIME = 1000;
+    private static long GAME_TIME;
+    private static final long DEFAULT_GAME_TIME = 10000;
 
     private GameSettings gameSettings;
     private WebSocketService webSocketService;
@@ -29,16 +29,16 @@ public class GameMechanicsImpl extends Abonent implements GameMechanics {
     private Set<GameSession> allSessions = new HashSet<>();
     private String waiter;
 
-    public GameMechanicsImpl(MessageSystem messageSystem, WebSocketService webSocketService, GameSettings gameSettings) {
-        super(messageSystem);
-        this.webSocketService = webSocketService;
-        this.gameSettings = gameSettings;
+    public GameMechanicsImpl(Context context) {
+        this.webSocketService = (WebSocketService) context.get(WebSocketService.class);
+        this.gameSettings = (GameSettings) context.get(GameSettings.class);
+        GAME_TIME = gameSettings == null ? DEFAULT_GAME_TIME : gameSettings.getMaxTime();
     }
 
     @Override
     public void addPlayer(String user) {
         if (waiter != null) {
-            starGame(user);
+            startGame(user);
             waiter = null;
         } else {
             waiter = user;
@@ -73,11 +73,12 @@ public class GameMechanicsImpl extends Abonent implements GameMechanics {
                 boolean firstWin = session.isFirstWin();
                 webSocketService.notifyGameOver(session.getFirst(), firstWin);
                 webSocketService.notifyGameOver(session.getSecond(), !firstWin);
+                allSessions.remove(session);
             }
         }
     }
 
-    private void starGame(String first) {
+    private void startGame(String first) {
         String second = waiter;
         GameSession gameSession = new GameSession(first, second);
         allSessions.add(gameSession);

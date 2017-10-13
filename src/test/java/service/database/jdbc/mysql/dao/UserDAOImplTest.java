@@ -2,7 +2,7 @@ package service.database.jdbc.mysql.dao;
 
 import entity.account.User;
 import entity.resource.DatabaseSettings;
-import main.ResourceFactory;
+import main.ResourceSingleton;
 import org.junit.Before;
 import org.junit.Test;
 import service.database.DAOFactory;
@@ -17,8 +17,8 @@ public class UserDAOImplTest {
 
     @Before
     public void setUp() {
-        ResourceFactory.getInstance().loadAllResources("src/main/resources");
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
+        ResourceSingleton.getInstance().loadResource("src/main/resources/mysql.settings");
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(DatabaseSettings.class);
         DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JDBC_MYSQL, databaseSettings);
         assert daoFactory != null;
         userDAO = daoFactory.getUserDAO();

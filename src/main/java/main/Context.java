@@ -5,22 +5,22 @@ import sun.net.www.ApplicationLaunchException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Context{
-    private Map<Class<?>, Object> context = new HashMap<>();
+public class Context {
+    private Map<String, Object> context = new HashMap<>();
 
     public Object get(Class<?> clazz) {
-        Object obj = context.get(clazz);
+        Object obj = context.get(clazz.getName());
         if (obj == null) {
             throw new Error("No such service in context");
         }
         return obj;
     }
 
-    public void add(Object obj) throws ApplicationLaunchException  {
-        Class<?> clazz = obj.getClass();
-        if (context.containsKey(clazz)) {
+    public void add(Class<?> clazz, Object obj) throws ApplicationLaunchException  {
+        String className = clazz.getName();
+        if (context.containsKey(className)) {
             throw new ApplicationLaunchException("Such service already exists");
         }
-        context.put(clazz, obj);
+        context.put(className, obj);
     }
 }

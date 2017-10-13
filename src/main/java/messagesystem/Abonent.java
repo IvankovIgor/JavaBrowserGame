@@ -1,5 +1,6 @@
 package messagesystem;
 
+@Deprecated
 public abstract class Abonent {
     private MessageSystem messageSystem;
     private Address address;

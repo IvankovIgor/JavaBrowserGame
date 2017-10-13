@@ -1,4 +1,4 @@
-package util.sax;
+package util.parser.xml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +9,7 @@ import util.ReflectionHelper;
 
 import java.lang.invoke.MethodHandles;
 
-public class SaxHandler extends DefaultHandler {
+public class XmlHandler extends DefaultHandler {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 

@@ -1,4 +1,4 @@
-package util.properties;
+package util.parser.properties;
 
 import util.ReflectionHelper;
 
@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class PropertiesFileParser {
+public class PropertiesParser {
     private Object object = null;
 
     public void parse(String filename) {

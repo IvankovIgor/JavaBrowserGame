@@ -7,14 +7,14 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by ivankov on 17.07.2017.
  */
 
-public class ValidatorTest {
-    private Validator validator;
+public class AccountValidatorTest {
+    private AccountValidator accountValidator;
     Set<AccountStatus> statuses;
     private String login;
     private String password;
@@ -22,14 +22,14 @@ public class ValidatorTest {
 
     @Before
     public void setUp() {
-        validator = new Validator(statuses);
+        accountValidator = new AccountValidator(statuses);
         statuses = new HashSet<>();
     }
 
     @Test
     public void testValidate() throws Exception {
         // TODO
-        validator.validate("admin", "adminadmin");
+        accountValidator.validate("admin", "adminadmin");
         assertTrue(true);
     }
 }

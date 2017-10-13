@@ -1,7 +1,8 @@
 package servlet;
 
 import game.mechanics.GameMechanics;
-import service.auth.AuthService;
+import main.Context;
+import service.account.AccountService;
 import util.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -13,31 +14,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameServlet extends HttpServlet {
-    public static final String GAME_PAGE_URL = "/game.html";
+    public static final String GAME_PAGE_URL = "/game";
 
     private GameMechanics gameMechanics;
-    private AuthService authService;
+    private AccountService accountService;
 
-    public GameServlet(GameMechanics gameMechanics, AuthService authService) {
-        this.gameMechanics = gameMechanics;
-        this.authService = authService;
+    public GameServlet(Context context) {
+        this.gameMechanics = (GameMechanics) context.get(GameMechanics.class);
+        this.accountService = (AccountService) context.get(AccountService.class);
     }
 
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 
-    public void doPost(HttpServletRequest request,
-                       HttpServletResponse response) throws ServletException, IOException {
-
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String login = request.getParameter("login");
+        String safeLogin = login == null ? "Unnamed" : login;
+        accountService.saveUserSession(safeLogin, request.getSession().getId());
+//        gameMechanics.addPlayer(safeLogin);
         Map<String, Object> pageVariables = new HashMap<>();
-        String name = request.getParameter("name");
-        String safeName = name == null ? "NoName" : name;
-        authService.saveUserName(request.getSession().getId(), name);
-        pageVariables.put("myName", safeName);
-
+        pageVariables.put("myName", safeLogin);
         response.getWriter().println(PageGenerator.getPage("game.html", pageVariables));
-
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
     }

@@ -1,8 +1,9 @@
 package servlet;
 
+import main.Context;
 import service.account.AccountService;
-import util.TimeHelper;
 import util.PageGenerator;
+import util.TimeHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,8 +20,8 @@ public class AdminServlet extends HttpServlet{
     public static final String ADMIN_PAGE_URL = "/admin";
     private AccountService accountService;
 
-    public AdminServlet(AccountService accountService) {
-        this.accountService = accountService;
+    public AdminServlet(Context context) {
+        this.accountService = (AccountService) context.get(AccountService.class);
     }
 
     @Override

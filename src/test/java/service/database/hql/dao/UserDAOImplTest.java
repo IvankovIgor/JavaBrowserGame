@@ -2,7 +2,7 @@ package service.database.hql.dao;
 
 import entity.account.User;
 import entity.resource.DatabaseSettings;
-import main.ResourceFactory;
+import main.ResourceSingleton;
 import org.junit.Before;
 import org.junit.Test;
 import service.database.DAOFactory;
@@ -15,9 +15,9 @@ public class UserDAOImplTest {
 
     @Before
     public void setUp() {
-        ResourceFactory.getInstance().loadResource("src/main/resources/postgres.properties");
+        ResourceSingleton.getInstance().loadResource("src/main/resources/postgres.properties");
 //        ResourceFactory.getInstance().loadResource("src/main/resources/mysql.properties");
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceFactory.getInstance().getResource("DatabaseSettings");
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(DatabaseSettings.class);
         DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.HQL, databaseSettings);
         assert daoFactory != null;
         userDAO = daoFactory.getUserDAO();

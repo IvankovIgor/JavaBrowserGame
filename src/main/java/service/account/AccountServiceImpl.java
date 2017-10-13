@@ -2,36 +2,41 @@ package service.account;
 
 import entity.account.AccountStatus;
 import entity.account.User;
-import messagesystem.Abonent;
-import messagesystem.Address;
-import messagesystem.Message;
-import messagesystem.MessageSystem;
-import messagesystem.account.MessageAuthenticate;
-import util.Validator;
+import main.Context;
+import service.database.DAOFactory;
+import util.AccountValidator;
 
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 /**
  * Created by ivankov on 13.07.2017.
  */
-public class AccountServiceImpl extends Abonent implements AccountService, Runnable {
-//    private static Map<String, User> userMap = new HashMap<>();
-//    private final MessageSystem messageSystem;
-//    private final Address address = new Address();
+public class AccountServiceImpl implements AccountService {
+    private final DAOFactory daoFactory;
+    private final Hashtable<String, String> userSessions = new Hashtable<>();
 
-    public AccountServiceImpl(MessageSystem messageSystem) {
-        super(messageSystem);
-        messageSystem.addService(this);
-        messageSystem.getAddressService().addAccountService(this);
+    public AccountServiceImpl(Context context) {
+        daoFactory = (DAOFactory) context.get(DAOFactory.class);
+    }
+
+    @Override
+    public String getLoginBySession(String sessionId) {
+        return userSessions.get(sessionId);
+    }
+
+    @Override
+    public void saveUserSession(String login, String sessionId) {
+        userSessions.put(sessionId, login);
     }
 
     @Override
     public Set<AccountStatus> signUp(String login, String password, String email) {
         Set<AccountStatus> accountStatuses = new HashSet<>();
 
-        Validator validator = new Validator(accountStatuses);
-        validator.validate(login, password, email);
+        AccountValidator accountValidator = new AccountValidator(accountStatuses);
+        accountValidator.validate(login, password, email);
 
         if (!accountStatuses.isEmpty())
             return accountStatuses;
@@ -47,50 +52,26 @@ public class AccountServiceImpl extends Abonent implements AccountService, Runna
         newUser.setLogin(login);
         newUser.setPassword(password);
         newUser.setEmail(email);
-
-//        getMessageSystem().sendMessage();
+        daoFactory.getUserDAO().save(newUser);
     }
 
     @Override
     public Set<AccountStatus> signIn(String login, String password) {
         Set<AccountStatus> accountStatuses = new HashSet<>();
 
-        Validator validator = new Validator(accountStatuses);
-        validator.validate(login, password);
+        AccountValidator accountValidator = new AccountValidator(accountStatuses);
+        accountValidator.validate(login, password);
+
 
         if (!accountStatuses.isEmpty())
             return accountStatuses;
+        if (daoFactory.getUserDAO().getByLogin(login) != null) {
+//            TODO
+//            userSessions.put(login, "asdasd");
+        } else {
+            accountStatuses.add(AccountStatus.INVALID_LOGIN);
+        }
 
-        Address from = this.getAddress();
-        Address to = getMessageSystem().getAddressService().getDatabaseService().getAddress();
-        Message msg = new MessageAuthenticate(this.getAddress(), ((Abonent)databaseService).getAddress(), login, password, "");
-        getMessageSystem().sendMessage(msg);
         return accountStatuses;
     }
-
-    @Override
-    public void run() {
-        while (true) {
-            getMessageSystem().execForAbonent(this);
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-//    public static Map<String, User> getUserMap() {
-//        return userMap;
-//    }
-
-//    @Override
-//    public MessageSystem getMessageSystem() {
-//        return messageSystem;
-//    }
-//
-//    @Override
-//    public Address getAddress() {
-//        return address;
-//    }
 }

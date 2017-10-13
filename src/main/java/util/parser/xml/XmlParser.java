@@ -1,4 +1,4 @@
-package util.sax;
+package util.parser.xml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +10,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
-public class SaxXmlReader {
+public class XmlParser {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -20,7 +20,7 @@ public class SaxXmlReader {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
 
-            SaxHandler handler = new SaxHandler();
+            XmlHandler handler = new XmlHandler();
             saxParser.parse(xmlFile, handler);
 
             return handler.getObject();
