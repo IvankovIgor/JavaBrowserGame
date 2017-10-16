@@ -89,6 +89,10 @@
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <stopPort>8005</stopPort>
                     <stopKey>stop</stopKey>
+                    <httpConnector>
+                        <host>localhost</host>
+                        <port>9999</port>
+                    </httpConnector>
                 </configuration>
                 <executions>
                     <execution>
@@ -132,7 +136,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>3.0.1</version>
+            <version>2.5</version>
             <scope>provided</scope>
         </dependency>
 

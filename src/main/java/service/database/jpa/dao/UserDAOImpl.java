@@ -4,10 +4,12 @@ import entity.account.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.jetbrains.annotations.Nullable;
 import service.database.dao.UserDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -45,13 +47,14 @@ public class UserDAOImpl implements UserDAO {
         return 1;
     }
 
+//    TODO
     @Override
-    public User get(long id) {
+    public @Nullable User get(long id) {
         return null;
     }
 
     @Override
-    public User getByLogin(String login) {
+    public @Nullable User getByLogin(String login) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
@@ -61,6 +64,11 @@ public class UserDAOImpl implements UserDAO {
         predicates.add(criteriaBuilder.equal(userRoot.get("login"), login));
         cq.where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         TypedQuery<User> q = entityManager.createQuery(cq);
-        return q.getSingleResult();
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException nre){
+            logger.debug("No user with login " + login);
+            return null;
+        }
     }
 }

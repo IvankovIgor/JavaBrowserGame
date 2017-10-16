@@ -11,7 +11,7 @@ public abstract class DAOFactory {
     public static final int JDBC_MYSQL = 1;
     public static final int JDBC_POSTGRES = 2;
     public static final int HQL = 3;
-    public static final int JPA = 4;
+    public static final int JPA_MYSQL = 4;
 
     public abstract UserDAO getUserDAO();
 
@@ -23,7 +23,7 @@ public abstract class DAOFactory {
                 return null;
             case HQL:
                 return new HqlDAOFactory(dbSettings);
-            case JPA:
+            case JPA_MYSQL:
                 return new JpaMySqlDAOFactory(dbSettings);
             default:
                 return null;

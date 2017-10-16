@@ -9,7 +9,7 @@
         var myName = "${myName}";
         var enemyName = "";
         init = function () {
-            ws = new WebSocket("ws://94.79.3.84:8888/gameplay");
+            ws = new WebSocket("ws://localhost:9999/gameplay");
             ws.onopen = function (event) {
             }
             ws.onmessage = function (event) {

@@ -17,22 +17,24 @@ public class JdbcMySqlDAOFactory extends DAOFactory {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-
     private static String connectionUrl;
+    private static String user;
+    private static String password;
 
     public JdbcMySqlDAOFactory(DatabaseSettings databaseSettings) {
         try {
-            DriverManager.registerDriver((Driver) Class.forName(JDBC_DRIVER).newInstance());
+            DriverManager.registerDriver((Driver) Class.forName(databaseSettings.getDriver()).newInstance());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
             e.printStackTrace();
             logger.warn("While registring JDBC driver");
         }
         connectionUrl = databaseSettings.getUrl();
+        user = databaseSettings.getUser();
+        password = databaseSettings.getPassword();
     }
 
     public static Connection createConnection() throws SQLException {
-        return DriverManager.getConnection(connectionUrl);
+        return DriverManager.getConnection(connectionUrl, user, password);
     }
 
     @Override

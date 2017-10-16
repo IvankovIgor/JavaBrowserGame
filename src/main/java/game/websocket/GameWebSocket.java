@@ -10,6 +10,8 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.simple.JSONObject;
 import service.websocket.WebSocketService;
 
+import java.io.IOException;
+
 @WebSocket
 public class GameWebSocket {
     private String myName;
@@ -27,24 +29,30 @@ public class GameWebSocket {
         return myName;
     }
 
+    @SuppressWarnings("unchecked")
     public void startGame(Player user) {
         try {
             JSONObject jsonStart = new JSONObject();
             jsonStart.put("status", "start");
             jsonStart.put("enemyName", user.getEnemyName());
             session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (Exception e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RuntimeException e) {
             System.out.print(e.toString());
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void gameOver(Player user, boolean win) {
         try {
             JSONObject jsonStart = new JSONObject();
             jsonStart.put("status", "finish");
             jsonStart.put("win", win);
             session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (Exception e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RuntimeException e) {
             System.out.print(e.toString());
         }
     }
@@ -55,12 +63,13 @@ public class GameWebSocket {
     }
 
     @OnWebSocketConnect
-    public void onOpen(Session session) {
-        setSession(session);
+    public void onOpen(Session s) {
+        this.session = s;
         webSocketService.addPlayer(this);
         gameMechanics.addPlayer(myName);
     }
 
+    @SuppressWarnings("unchecked")
     public void setMyScore(Player user) {
         JSONObject jsonStart = new JSONObject();
         jsonStart.put("status", "increment");
@@ -68,11 +77,14 @@ public class GameWebSocket {
         jsonStart.put("score", user.getMyScore());
         try {
             session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (Exception e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RuntimeException e) {
             System.out.print(e.toString());
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void setEnemyScore(Player user) {
         JSONObject jsonStart = new JSONObject();
         jsonStart.put("status", "increment");
@@ -80,7 +92,9 @@ public class GameWebSocket {
         jsonStart.put("score", user.getEnemyScore());
         try {
             session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (Exception e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RuntimeException e) {
             System.out.print(e.toString());
         }
     }

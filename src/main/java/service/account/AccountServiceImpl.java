@@ -6,13 +6,10 @@ import main.Context;
 import service.database.DAOFactory;
 import util.AccountValidator;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Hashtable;
 import java.util.Set;
 
-/**
- * Created by ivankov on 13.07.2017.
- */
 public class AccountServiceImpl implements AccountService {
     private final DAOFactory daoFactory;
     private final Hashtable<String, String> userSessions = new Hashtable<>();
@@ -33,9 +30,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Set<AccountStatus> signUp(String login, String password, String email) {
-        Set<AccountStatus> accountStatuses = new HashSet<>();
+        Set<AccountStatus> accountStatuses = EnumSet.noneOf(AccountStatus.class);
 
-        AccountValidator accountValidator = new AccountValidator(accountStatuses);
+        AccountValidator accountValidator = new AccountValidator(daoFactory.getUserDAO(), accountStatuses);
         accountValidator.validate(login, password, email);
 
         if (!accountStatuses.isEmpty())
@@ -57,9 +54,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Set<AccountStatus> signIn(String login, String password) {
-        Set<AccountStatus> accountStatuses = new HashSet<>();
+        Set<AccountStatus> accountStatuses = EnumSet.noneOf(AccountStatus.class);
 
-        AccountValidator accountValidator = new AccountValidator(accountStatuses);
+        AccountValidator accountValidator = new AccountValidator(daoFactory.getUserDAO(), accountStatuses);
         accountValidator.validate(login, password);
 
 

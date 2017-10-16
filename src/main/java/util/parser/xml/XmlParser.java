@@ -14,8 +14,8 @@ public class XmlParser {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-    public static Object readXML(String xmlFile) {
-        logger.debug("readXML:");
+    public static Object parse(String xmlFile) {
+        logger.debug("parse:");
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();

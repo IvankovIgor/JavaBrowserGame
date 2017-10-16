@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" monitorInterval="30">
     <Properties>
-        <Property name="log_dir">out/${date:yyyy_MM_dd}</Property>
+        <Property name="log_dir">log/${date:yyyy_MM_dd}</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
@@ -14,15 +14,15 @@
             </Policies>
             <DefaultRolloverStrategy max="20"/>
         </RollingFile>
-        <Async name="AsyncFile">
-            <AppenderRef ref="RollingFile"/>
-        </Async>
         <Async name="AsyncConsole">
             <AppenderRef ref="Console"/>
         </Async>
+        <Async name="AsyncFile">
+            <AppenderRef ref="RollingFile"/>
+        </Async>
     </Appenders>
     <Loggers>
-        <Root level="trace">
+        <Root level="info">
             <AppenderRef ref="AsyncConsole" level="debug"/>
             <AppenderRef ref="AsyncFile" level="info"/>
         </Root>

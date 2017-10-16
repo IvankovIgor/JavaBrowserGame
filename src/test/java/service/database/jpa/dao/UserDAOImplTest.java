@@ -3,7 +3,7 @@ package service.database.jpa.dao;
 import entity.account.User;
 import entity.resource.DatabaseSettings;
 import main.ResourceSingleton;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import service.database.DAOFactory;
 import service.database.dao.UserDAO;
@@ -12,14 +12,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class UserDAOImplTest {
-    private UserDAO userDAO;
+    private static UserDAO userDAO;
 
-    @Before
-    public void setUp() {
-        ResourceSingleton.getInstance().loadResource("src/main/resources/postgres.properties");
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(DatabaseSettings.class);
+    @BeforeClass
+    public static void setUp() {
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.MYSQL_TEST_PROPERTIES);
         assert databaseSettings != null;
-        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JPA, databaseSettings);
+        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JPA_MYSQL, databaseSettings);
         assert daoFactory != null;
         userDAO = daoFactory.getUserDAO();
     }
@@ -34,7 +33,7 @@ public class UserDAOImplTest {
 
     @Test
     public void getByLogin() {
-        User user = userDAO.getByLogin("asdf");
+        User user = userDAO.getByLogin("qwer");
         assertNotNull(user);
     }
 

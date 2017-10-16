@@ -1,11 +1,17 @@
 package main;
 
-import sun.net.www.ApplicationLaunchException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Context {
+    @SuppressWarnings("ConstantNamingConvention")
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+
     private Map<String, Object> context = new HashMap<>();
 
     public Object get(Class<?> clazz) {
@@ -16,10 +22,10 @@ public class Context {
         return obj;
     }
 
-    public void add(Class<?> clazz, Object obj) throws ApplicationLaunchException  {
+    public void add(Class<?> clazz, @Nullable Object obj) {
         String className = clazz.getName();
-        if (context.containsKey(className)) {
-            throw new ApplicationLaunchException("Such service already exists");
+        if (obj == null || context.containsKey(className)) {
+            logger.warn(clazz.getName() + " wasn't added");
         }
         context.put(className, obj);
     }

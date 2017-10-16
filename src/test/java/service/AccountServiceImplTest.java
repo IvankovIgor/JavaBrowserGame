@@ -1,11 +1,16 @@
 package service;
 
 import entity.account.AccountStatus;
-import org.junit.Before;
+import entity.resource.DatabaseSettings;
+import main.Context;
+import main.ResourceSingleton;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import service.account.AccountService;
+import service.account.AccountServiceImpl;
+import service.database.DAOFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,20 +20,24 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.Assert.assertThat;
 
 /**
- * Created by ivankov on 13.07.2017.
+ * @author Igor Ivankov
  */
 
 @RunWith(Parameterized.class)
 public class AccountServiceImplTest {
-    private AccountService accountService;
+    private static AccountService accountService;
     private String login;
     private String password;
     private String email;
     private AccountStatus[] expectedAccountStatuses;
 
-    @Before
-    public void setUp() {
-//        accountService = new AccountServiceImpl();
+    @BeforeClass
+    public static void setUp() {
+        Context context = new Context();
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.MYSQL_TEST_PROPERTIES);
+        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JPA_MYSQL, databaseSettings);
+        context.add(DAOFactory.class, daoFactory);
+        accountService = new AccountServiceImpl(context);
     }
 
     public AccountServiceImplTest(Object[] input, Object[] expectedStatuses) {

@@ -1,10 +1,13 @@
 package util;
 
 import entity.account.AccountStatus;
+import entity.resource.DatabaseSettings;
+import main.ResourceSingleton;
 import org.junit.Before;
 import org.junit.Test;
+import service.database.DAOFactory;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
@@ -22,8 +25,10 @@ public class AccountValidatorTest {
 
     @Before
     public void setUp() {
-        accountValidator = new AccountValidator(statuses);
-        statuses = new HashSet<>();
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.MYSQL_PROPERTIES);
+        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JPA_MYSQL, databaseSettings);
+        accountValidator = new AccountValidator(daoFactory.getUserDAO(), statuses);
+        statuses = EnumSet.allOf(AccountStatus.class);
     }
 
     @Test

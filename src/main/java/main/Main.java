@@ -19,11 +19,9 @@ import service.database.DAOFactory;
 import service.websocket.WebSocketService;
 import service.websocket.WebSocketServiceImpl;
 import servlet.*;
-import sun.net.www.ApplicationLaunchException;
 
 import javax.servlet.Servlet;
 import java.lang.invoke.MethodHandles;
-import java.net.InetSocketAddress;
 
 public class Main {
     @SuppressWarnings("ConstantNamingConvention")
@@ -31,11 +29,6 @@ public class Main {
 
 //    public static final int DEFAULT_PORT = 8888;
     public static final String STATIC_BASE = "static";
-    private static final String PATH_TO_PROPERTIES = "src/main/resources/";
-    private static final String MYSQL_PROPERTIES = "mysql.properties";
-    private static final String POSTGRES_PROPERTIES = "postgres.properties";
-    private static final String SERVER_PROPERTIES = "server.properties";
-    private static final String GAMESETTINGS_PROPERTIES = "gamesettings.properties";
 
     @SuppressWarnings("OverlyBroadThrowsClause")
     public static void main(String[] args) throws Exception {
@@ -44,27 +37,18 @@ public class Main {
         WebSocketService webSocketService = new WebSocketServiceImpl();
         context.add(WebSocketService.class, webSocketService);
 
-        if (!ResourceSingleton.getInstance().loadResource(PATH_TO_PROPERTIES + MYSQL_PROPERTIES)) {
-            logger.debug("Database settings weren't loaded");
-            throw new ApplicationLaunchException("Database settings weren't loaded");
-        }
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(DatabaseSettings.class);
-        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JPA, databaseSettings);
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.MYSQL_PROPERTIES);
+        DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JPA_MYSQL, databaseSettings);
         if (daoFactory != null) {
             context.add(DAOFactory.class, daoFactory);
         } else {
             logger.error("DAO factory is null");
-            throw new ApplicationLaunchException("DAO factory is null");
         }
 
         AccountService accountService = new AccountServiceImpl(context);
         context.add(AccountService.class, accountService);
 
-        if (!ResourceSingleton.getInstance().loadResource(PATH_TO_PROPERTIES + GAMESETTINGS_PROPERTIES)) {
-            logger.debug("Game settings weren't loaded");
-            throw new ApplicationLaunchException("Game settings weren't loaded");
-        }
-        GameSettings gameSettings = (GameSettings) ResourceSingleton.getInstance().getResource(GameSettings.class);
+        GameSettings gameSettings = (GameSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.GAME_PROPERTIES);
         context.add(GameSettings.class, gameSettings);
 
         GameMechanics gameMechanics = new GameMechanicsImpl(context);
@@ -94,18 +78,23 @@ public class Main {
         HandlerList handlerList = new HandlerList();
         handlerList.setHandlers(new Handler[]{resourceHandler, servletContextHandler});
 
-        if (!ResourceSingleton.getInstance().loadResource(PATH_TO_PROPERTIES + SERVER_PROPERTIES)) {
-            logger.debug("Server settings weren't loaded");
-            throw new ApplicationLaunchException("Server settings weren't loaded");
-        }
-        ServerSettings serverSettings = (ServerSettings) ResourceSingleton.getInstance().getResource(ServerSettings.class);
-        String host = serverSettings.getHost();
+        ServerSettings serverSettings = (ServerSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.SERVER_PROPERTIES);
+//        String host = serverSettings.getHost();
         int port = serverSettings.getPort();
 //        int port = args.length == 1 ? Integer.valueOf(args[0]) : DEFAULT_PORT;
-        InetSocketAddress socketAddress = new InetSocketAddress(host, port);
-        Server server = new Server(socketAddress);
-        server.setHandler(handlerList);
+//        InetSocketAddress socketAddress = new InetSocketAddress(host, port);
 
+        Server server = new Server(port);
+        server.setHandler(handlerList);
+//        ServerConnector connector = null;
+//        try (ServerConnector connector = new ServerConnector(server)) {
+//            connector.setPort(port);
+//            connector.setHost(host);
+//            server.setConnectors(new ServerConnector[] {connector});
+//        } catch (RuntimeException e) {
+//            e.printStackTrace();
+//        }
+        logger.info("Starting jetty");
         server.start();
 
 //        server.join();

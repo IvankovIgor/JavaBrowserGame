@@ -3,7 +3,7 @@ package service.database.hql.dao;
 import entity.account.User;
 import entity.resource.DatabaseSettings;
 import main.ResourceSingleton;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import service.database.DAOFactory;
 import service.database.dao.UserDAO;
@@ -11,13 +11,11 @@ import service.database.dao.UserDAO;
 import static org.junit.Assert.assertEquals;
 
 public class UserDAOImplTest {
-    private UserDAO userDAO;
+    private static UserDAO userDAO;
 
-    @Before
-    public void setUp() {
-        ResourceSingleton.getInstance().loadResource("src/main/resources/postgres.properties");
-//        ResourceFactory.getInstance().loadResource("src/main/resources/mysql.properties");
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(DatabaseSettings.class);
+    @BeforeClass
+    public static void setUp() {
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.POSTGRES_TEST_PROPERTIES);
         DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.HQL, databaseSettings);
         assert daoFactory != null;
         userDAO = daoFactory.getUserDAO();

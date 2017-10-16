@@ -1,10 +1,12 @@
 package util;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Field;
 import java.util.Properties;
 
 public class ReflectionHelper {
-    public static Object createInstance(String className) {
+    public static @Nullable Object createInstance(String className) {
         try {
             return Class.forName(className).newInstance();
         } catch (IllegalArgumentException | SecurityException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
@@ -13,11 +15,13 @@ public class ReflectionHelper {
         return null;
     }
 
-    public static void setFieldsValue(Object object, Properties properties) {
-        Field[] fields = object.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            String fieldName = field.getName();
-            setFieldValue(object, fieldName, properties.getProperty(fieldName));
+    public static void setFieldsValue(@Nullable Object object, Properties properties) {
+        if (object != null) {
+            Field[] fields = object.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                String fieldName = field.getName();
+                setFieldValue(object, fieldName, properties.getProperty(fieldName));
+            }
         }
     }
 

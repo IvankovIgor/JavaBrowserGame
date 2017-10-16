@@ -1,18 +1,30 @@
 package main;
 
 import entity.resource.Resource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import util.parser.Parser;
 import util.parser.properties.PropertiesParser;
 import util.parser.xml.XmlParser;
-import util.vfs.Vfs;
-import util.vfs.VfsImpl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public final class ResourceSingleton {
+    @SuppressWarnings("ConstantNamingConvention")
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+
+    public static final String PATH_TO_PROPERTIES = "src/main/resources/";
+    public static final String MYSQL_PROPERTIES = "mysql.properties";
+    public static final String MYSQL_TEST_PROPERTIES = "mysql-test.properties";
+    public static final String POSTGRES_PROPERTIES = "postgres.properties";
+    public static final String POSTGRES_TEST_PROPERTIES = "postgres-test.properties";
+    public static final String SERVER_PROPERTIES = "server.properties";
+    public static final String GAME_PROPERTIES = "game.properties";
+
     private static ResourceSingleton resourceSingleton;
-    Map<String, Resource> resources = new HashMap<>();
+    private Map<String, Resource> resources = new HashMap<>();
 
     private ResourceSingleton() {}
 
@@ -23,34 +35,32 @@ public final class ResourceSingleton {
         return resourceSingleton;
     }
 
-    @Deprecated
-    public void loadAllResources(String resourceDirectory) {
-        Vfs vfs = new VfsImpl(resourceDirectory);
-        Iterator<String> iterator = vfs.getIterator();
-
-        while (iterator.hasNext()) {
-            String resourcePath = iterator.next();
-            loadResource(resourcePath);
+    public Resource getResource(String resourceName) {
+        if (!resources.containsKey(resourceName)) {
+            if (!loadResource(resourceName)) {
+                logger.warn("Resource \"" + resourceName + "\" wasn't loaded.");
+            }
         }
+        return resources.get(resourceName);
     }
 
-    public boolean loadResource(String resourcePath) {
+    private boolean loadResource(String resourceName) {
+        String resourcePath = PATH_TO_PROPERTIES + resourceName;
         if (isValidPath(resourcePath)) {
-            Resource resource;
+            Parser parser;
             String fileExtension = getFileExtension(resourcePath);
             switch (fileExtension) {
                 case "properties":
-                    PropertiesParser propertiesParser = new PropertiesParser();
-                    propertiesParser.parse(resourcePath);
-                    resource = (Resource) propertiesParser.getObject();
+                    parser = PropertiesParser::parse;
                     break;
                 case "xml":
-                    resource = (Resource) XmlParser.readXML(resourcePath);
+                    parser = XmlParser::parse;
                     break;
                 default:
                     return false;
             }
-            resources.put(resource.getClass().getName(), resource);
+            Resource resource = (Resource) parser.parse(resourcePath);
+            resources.put(resourceName, resource);
             return true;
         } else {
             return false;
@@ -64,9 +74,4 @@ public final class ResourceSingleton {
     private boolean isValidPath(String path) {
         return path.lastIndexOf('.') != -1 && path.lastIndexOf('.') != 0;
     }
-
-    public Resource getResource(Class<?> resourceClass) {
-        return resources.get(resourceClass.getName());
-    }
-
 }

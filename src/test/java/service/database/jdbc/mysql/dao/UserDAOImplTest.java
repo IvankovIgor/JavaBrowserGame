@@ -17,8 +17,7 @@ public class UserDAOImplTest {
 
     @Before
     public void setUp() {
-        ResourceSingleton.getInstance().loadResource("src/main/resources/mysql.settings");
-        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(DatabaseSettings.class);
+        DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.MYSQL_TEST_PROPERTIES);
         DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JDBC_MYSQL, databaseSettings);
         assert daoFactory != null;
         userDAO = daoFactory.getUserDAO();

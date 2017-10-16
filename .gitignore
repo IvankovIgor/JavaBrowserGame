@@ -25,3 +25,6 @@ hs_err_pid*
 target/
 out/
 src/test/java/main/
+log/
+.idea/dataSources.local.xml
+.idea/dataSources/

@@ -1,18 +1,21 @@
 package util;
 
 import entity.account.AccountStatus;
+import service.database.dao.UserDAO;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by ivankov on 17.07.2017.
+ * @author Igor Ivankov
  */
 public class AccountValidator {
-    private Set<AccountStatus> accountStatuses = new HashSet<>();
+    private final Set<AccountStatus> accountStatuses;
 
-    public AccountValidator(Set<AccountStatus> accountStatuses) {
+    private UserDAO userDAO;
+
+    public AccountValidator(UserDAO userDAO, Set<AccountStatus> accountStatuses) {
         this.accountStatuses = accountStatuses;
+        this.userDAO = userDAO;
     }
 
     public void validate(String login, String password) {
@@ -46,10 +49,7 @@ public class AccountValidator {
     }
 
     private boolean isExistingLogin(String login) {
-        // TODO
-        // IMPL????
-//        return AccountServiceImpl.getUserMap().containsKey(login);
-        return false;
+        return userDAO.getByLogin(login) != null;
     }
 
     private void validatePassword(String password) {
