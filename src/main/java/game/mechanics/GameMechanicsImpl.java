@@ -3,9 +3,9 @@ package game.mechanics;
 import entity.game.GameSession;
 import entity.game.Player;
 import entity.resource.GameSettings;
-import main.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import service.websocket.WebSocketService;
 import util.TimeHelper;
 
@@ -23,15 +23,15 @@ public class GameMechanicsImpl implements GameMechanics {
     private static long GAME_TIME;
     private static final long DEFAULT_GAME_TIME = 10000;
 
-    private GameSettings gameSettings;
-    private WebSocketService webSocketService;
+    private final WebSocketService webSocketService;
+    private final GameSettings gameSettings;
     private Map<String, GameSession> nameToGame = new HashMap<>();
     private Set<GameSession> allSessions = new HashSet<>();
-    private String waiter;
+    private @Nullable String waiter;
 
-    public GameMechanicsImpl(Context context) {
-        this.webSocketService = (WebSocketService) context.get(WebSocketService.class);
-        this.gameSettings = (GameSettings) context.get(GameSettings.class);
+    public GameMechanicsImpl(WebSocketService webSocketService, GameSettings gameSettings) {
+        this.webSocketService = webSocketService;
+        this.gameSettings = gameSettings;
         GAME_TIME = gameSettings == null ? DEFAULT_GAME_TIME : gameSettings.getMaxTime();
     }
 

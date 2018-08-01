@@ -50,7 +50,7 @@ public class SignInServlet extends HttpServlet {
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
             pageVariables.put("error", "failed");
-            response.getWriter().println(PageGenerator.getPage("signin.html", pageVariables));
+            response.getWriter().println(PageGenerator.getPage("signinform.html", pageVariables));
         }
     }
 }

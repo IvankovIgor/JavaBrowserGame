@@ -4,6 +4,8 @@ import entity.account.AccountStatus;
 import service.database.dao.UserDAO;
 
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Igor Ivankov
@@ -11,11 +13,13 @@ import java.util.Set;
 public class AccountValidator {
     private final Set<AccountStatus> accountStatuses;
 
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
+    private final boolean isSignUp;
 
-    public AccountValidator(UserDAO userDAO, Set<AccountStatus> accountStatuses) {
+    public AccountValidator(UserDAO userDAO, Set<AccountStatus> accountStatuses, boolean isSignUp) {
         this.accountStatuses = accountStatuses;
         this.userDAO = userDAO;
+        this.isSignUp = isSignUp;
     }
 
     public void validate(String login, String password) {
@@ -34,7 +38,7 @@ public class AccountValidator {
             accountStatuses.add(AccountStatus.EMPTY_LOGIN);
         } else if (isInvalidLogin(login)) {
             accountStatuses.add(AccountStatus.INVALID_LOGIN);
-        } else if (isExistingLogin(login)) {
+        } else if (isSignUp && isExistingLogin(login)) {
             accountStatuses.add(AccountStatus.EXISTING_LOGIN);
         }
     }
@@ -44,8 +48,9 @@ public class AccountValidator {
     }
 
     private boolean isInvalidLogin(String login) {
-        // TODO
-        return false;
+        Pattern pattern = Pattern.compile("\\w{3,15}");
+        Matcher matcher = pattern.matcher(login);
+        return matcher.matches();
     }
 
     private boolean isExistingLogin(String login) {
@@ -55,8 +60,6 @@ public class AccountValidator {
     private void validatePassword(String password) {
         if (isEmptyPassword(password)) {
             accountStatuses.add(AccountStatus.EMPTY_PASSWORD);
-        } else if (isTooShortPassword(password)) {
-            accountStatuses.add(AccountStatus.TOO_SHORT_PASSWORD);
         } else if (isInvalidPassword(password)) {
             accountStatuses.add(AccountStatus.INVALID_PASSWORD);
         }
@@ -66,13 +69,10 @@ public class AccountValidator {
         return password == null || password.isEmpty();
     }
 
-    private boolean isTooShortPassword(String password) {
-        return password.length() < 8;
-    }
-
     private boolean isInvalidPassword(String password) {
-        // TODO
-        return false;
+        Pattern pattern = Pattern.compile(".{8,20}");
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 
     private void validateEmail(String email) {
@@ -80,7 +80,7 @@ public class AccountValidator {
             accountStatuses.add(AccountStatus.EMPTY_EMAIL);
         } else if (isInvalidEmail(email)) {
             accountStatuses.add(AccountStatus.INVALID_EMAIL);
-        } else if (isExistingEmail(email)) {
+        } else if (isSignUp && isExistingEmail(email)) {
             accountStatuses.add(AccountStatus.EXISTING_EMAIL);
         }
     }
@@ -90,12 +90,11 @@ public class AccountValidator {
     }
 
     private boolean isInvalidEmail(String email) {
-        return !email.contains("@") || !email.contains(".");
+        return !email.contains("@");
     }
 
     private boolean isExistingEmail(String email) {
-        // TODO
-        return false;
+        return userDAO.getByEmail(email) != null;
     }
 
     public Set<AccountStatus> getAccountStatuses() {

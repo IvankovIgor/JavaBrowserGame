@@ -23,7 +23,9 @@ import servlet.*;
 import javax.servlet.Servlet;
 import java.lang.invoke.MethodHandles;
 
-public class Main {
+import static java.lang.System.exit;
+
+public class Application {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -43,15 +45,16 @@ public class Main {
             context.add(DAOFactory.class, daoFactory);
         } else {
             logger.error("DAO factory is null");
+            exit(1);
         }
 
-        AccountService accountService = new AccountServiceImpl(context);
+        AccountService accountService = new AccountServiceImpl(daoFactory);
         context.add(AccountService.class, accountService);
 
         GameSettings gameSettings = (GameSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.GAME_PROPERTIES);
         context.add(GameSettings.class, gameSettings);
 
-        GameMechanics gameMechanics = new GameMechanicsImpl(context);
+        GameMechanics gameMechanics = new GameMechanicsImpl(webSocketService, gameSettings);
         context.add(GameMechanics.class, gameMechanics);
 
         Servlet signUpServlet = new SignUpServlet(context);

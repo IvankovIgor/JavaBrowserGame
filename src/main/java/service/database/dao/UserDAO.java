@@ -1,9 +1,11 @@
 package service.database.dao;
 
 import entity.account.User;
+import org.jetbrains.annotations.Nullable;
 
 public interface UserDAO {
-    public int save(User user);
-    public User get(long id);
-    public User getByLogin(String login);
+    int save(User user);
+    @Nullable User get(long id);
+    @Nullable User getByLogin(String login);
+    @Nullable User getByEmail(String email);
 }

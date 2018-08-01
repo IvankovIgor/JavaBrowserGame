@@ -83,4 +83,27 @@ public class UserDAOImpl implements UserDAO {
 
         return value;
     }
+
+    @Override
+    public @Nullable User getByEmail(String email) {
+        logger.debug("Getting user by name");
+        User value = null;
+        TExecutor exec = new TExecutor();
+
+        try (Connection connection = JdbcMySqlDAOFactory.createConnection()) {
+            String sql = "SELECT id, login, password, email FROM user WHERE email = " + email;
+            value = exec.execQuery(connection, sql, result -> {
+                result.next();
+                return new User(result.getLong(1),
+                        result.getString(2),
+                        result.getString(3),
+                        result.getString(4));
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.debug("While getting");
+        }
+
+        return value;
+    }
 }

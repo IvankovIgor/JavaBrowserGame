@@ -37,7 +37,7 @@ public class AccountServiceImplTest {
         DatabaseSettings databaseSettings = (DatabaseSettings) ResourceSingleton.getInstance().getResource(ResourceSingleton.MYSQL_TEST_PROPERTIES);
         DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.JPA_MYSQL, databaseSettings);
         context.add(DAOFactory.class, daoFactory);
-        accountService = new AccountServiceImpl(context);
+        accountService = new AccountServiceImpl(daoFactory);
     }
 
     public AccountServiceImplTest(Object[] input, Object[] expectedStatuses) {

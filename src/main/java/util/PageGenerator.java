@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.invoke.MethodHandles;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -19,13 +20,22 @@ public class PageGenerator {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-    private static final String HTML_DIR = "templates";
+    private static final String TEMPLATE_DIR = "templates";
     private static final Configuration CFG = new Configuration(new Version("2.3.26"));
-
+    static {
+        try {
+            URL url = PageGenerator.class.getClassLoader().getResource(TEMPLATE_DIR);
+            if (url != null) {
+                CFG.setDirectoryForTemplateLoading(new File(url.getPath()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static String getPage(String filename, Map<String, Object> data) {
         Writer stream = new StringWriter();
         try {
-            Template template = CFG.getTemplate(HTML_DIR + File.separator + filename);
+            Template template = CFG.getTemplate(filename);
             template.process(data, stream);
         } catch (TemplateException | MalformedTemplateNameException | ParseException | TemplateNotFoundException e) {
             e.printStackTrace();

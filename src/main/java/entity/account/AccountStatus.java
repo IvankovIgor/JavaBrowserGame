@@ -10,7 +10,6 @@ public enum AccountStatus {
     EXISTING_LOGIN("user having such login already exists"),
     EMPTY_PASSWORD("empty password"),
     INVALID_PASSWORD("invalid password"),
-    TOO_SHORT_PASSWORD("too short password"),
     EMPTY_EMAIL("empty email"),
     INVALID_EMAIL("invalid email"),
     EXISTING_EMAIL("user having such email already exists");

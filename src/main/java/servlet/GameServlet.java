@@ -16,8 +16,8 @@ import java.util.Map;
 public class GameServlet extends HttpServlet {
     public static final String GAME_PAGE_URL = "/game";
 
-    private GameMechanics gameMechanics;
-    private AccountService accountService;
+    private final GameMechanics gameMechanics;
+    private final AccountService accountService;
 
     public GameServlet(Context context) {
         this.gameMechanics = (GameMechanics) context.get(GameMechanics.class);

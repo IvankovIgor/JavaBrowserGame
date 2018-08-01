@@ -8,7 +8,6 @@ import service.database.DAOFactory;
 import service.database.dao.UserDAO;
 import service.database.jpa.dao.UserDAOImpl;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.lang.invoke.MethodHandles;
@@ -16,6 +15,7 @@ import java.lang.invoke.MethodHandles;
 public class JpaMySqlDAOFactory extends DAOFactory {
     @SuppressWarnings("ConstantNamingConvention")
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+    private static final String PERSISTENCE_UNIT_NAME = "JavaBrowserGame";
 
     private static EntityManagerFactory entityManagerFactory;
 
@@ -28,8 +28,8 @@ public class JpaMySqlDAOFactory extends DAOFactory {
         configuration.setProperty("hibernate.default_schema", dbSettings.getSchema());
         configuration.setProperty("hibernate.hbm2ddl.auto", dbSettings.getMode());
 
-        entityManagerFactory = Persistence.createEntityManagerFactory("JavaBrowserGame", configuration.getProperties());
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, configuration.getProperties());
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
     }
 
 //    private static EntityManager createEntityManager() {

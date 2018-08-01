@@ -2,7 +2,7 @@ package service.account;
 
 import entity.account.AccountStatus;
 import entity.account.User;
-import main.Context;
+import org.jetbrains.annotations.NotNull;
 import service.database.DAOFactory;
 import util.AccountValidator;
 
@@ -14,8 +14,8 @@ public class AccountServiceImpl implements AccountService {
     private final DAOFactory daoFactory;
     private final Hashtable<String, String> userSessions = new Hashtable<>();
 
-    public AccountServiceImpl(Context context) {
-        daoFactory = (DAOFactory) context.get(DAOFactory.class);
+    public AccountServiceImpl(@NotNull DAOFactory daoFactory) {
+        this.daoFactory = daoFactory;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
     public Set<AccountStatus> signUp(String login, String password, String email) {
         Set<AccountStatus> accountStatuses = EnumSet.noneOf(AccountStatus.class);
 
-        AccountValidator accountValidator = new AccountValidator(daoFactory.getUserDAO(), accountStatuses);
+        AccountValidator accountValidator = new AccountValidator(daoFactory.getUserDAO(), accountStatuses, true);
         accountValidator.validate(login, password, email);
 
         if (!accountStatuses.isEmpty())
@@ -56,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
     public Set<AccountStatus> signIn(String login, String password) {
         Set<AccountStatus> accountStatuses = EnumSet.noneOf(AccountStatus.class);
 
-        AccountValidator accountValidator = new AccountValidator(daoFactory.getUserDAO(), accountStatuses);
+        AccountValidator accountValidator = new AccountValidator(daoFactory.getUserDAO(), accountStatuses, false);
         accountValidator.validate(login, password);
 
 
@@ -64,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
             return accountStatuses;
         if (daoFactory.getUserDAO().getByLogin(login) != null) {
 //            TODO
-//            userSessions.put(login, "asdasd");
+//            userSessions.put(session.getId(), login);
         } else {
             accountStatuses.add(AccountStatus.INVALID_LOGIN);
         }

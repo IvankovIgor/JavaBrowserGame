@@ -69,4 +69,21 @@ public class UserDAOImpl implements UserDAO {
 
         return value;
     }
+
+    @Override
+    public @Nullable User getByEmail(String email) {
+        logger.debug("Getting by email");
+        User value = null;
+
+        try (Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
+            query.setParameter("email", email);
+            value = query.getSingleResult();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            logger.debug("While getting by email");
+        }
+
+        return value;
+    }
 }
